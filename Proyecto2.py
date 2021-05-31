@@ -181,7 +181,7 @@ def gestionEmpresa():
 
     def modificarEmpresa():
         ventanaModificarEmpresa = Tk()
-        ventanaModificarEmpresa.geometry("500x400")
+        ventanaModificarEmpresa.geometry("500x300")
         ventanaModificarEmpresa.title("Modificar empresa")
         ventanaModificarEmpresa.config(bg = "Turquoise")
         ventanaModificarEmpresa.iconbitmap("python.ico")
@@ -189,7 +189,7 @@ def gestionEmpresa():
         etiquetaModificar = tkinter.Label(ventanaEliminarEmpresa,text="Dígite el número de cédula jurídica:",
                                              font=("Times new roman","12")).place(x=10,y=20)
         Modificar = tkinter.Entry(ventanaModificarEmpresa,text="",font=("Times new roman","12"))
-        Modificar.place(x=300,y=20)
+        Modificar.pack()
 
         if ("Cédula júridica:"+Cedula+ "\n") in empresa:
             Indice = empresa.index("Cédula júridica:"+Cedula+"\n")
@@ -199,6 +199,23 @@ def gestionEmpresa():
             Abrir.write(TransformarString_aux(EmpresaNueva))
             Abrir.close()
 
+
+    def mostrarEmpresas():
+        ventanaMostrarEmpresa = Tk()
+        ventanaMostrarEmpresa.geometry("500x400")
+        ventanaMostrarEmpresa.title("Mostrar empresas")
+        ventanaMostrarEmpresa.iconbitmap("python.ico")
+        Archivo = open("Información de la empresa.txt")
+        Abrir = Archivo.readlines()
+        Mostrar = tkinter.Listbox(ventanaMostrarEmpresa)
+        Mostrar.pack(fill=X,expand=YES)
+        contador = 0
+        for informacion in Abrir:
+            Mostrar.insert(contador,informacion)
+            contador += 1
+        boton = tkinter.Button(ventanaMostrarEmpresa,text = "Mostrar empresas",font=("Times new roman","12"))
+        boton.pack()
+
         
       
 
@@ -207,26 +224,13 @@ def gestionEmpresa():
     op2.add_command(label = "1 - Incluir empresa",font=("Times new roman","12"),command = IncluirEmpresa)
     op2.add_command(label = "2 - Eliminar empresa",font=("Times new roman","12"),command = eliminarEmpresa)
     op2.add_command(label = "3 - Modificar empresa",font=("Times new roman","12"),command = lambda:modificarEmpresa)
-    op2.add_command(label = "4 - Mostrar empresas",font=("Times new roman","12"),command = lambda:mostrarEmpresas)
+    op2.add_command(label = "4 - Mostrar empresas",font=("Times new roman","12"),command = mostrarEmpresas)
     op2.add_command(label = "5 - Retornar",font=("Times new roman","12"),command = lambda:menuAdministrativo)
     menu1.add_cascade(label=" Gestión de empresa",font=("Times new roman","12"), menu = op2)
     ventana2.config(menu=menu1)
     ventana2.mainloop()
 
-        
-
-
-
-def mostrarEmpresas():
-    ventanaMostrarEmpresas=Tk()
-    ventanaMostrarEmpresa.geometry("400x500")
-    ventMostrar.title("Mostrar empresas")
-
-
-
                 
-                    
-            
 def gestionTransporte():
     ventana3 = Tk()
     ventana3.geometry("250x200")
@@ -373,29 +377,36 @@ def gestionTransporte():
                         command= eliminarTransporte_aux).place(x=200,y=200)
         ventanaEliminarTransporte.mainloop()
 
+    def mostrarTransportes():
+        ventanaMostrarTransporte = Tk()
+        ventanaMostrarTransporte.geometry("500x400")
+        ventanaMostrarTransporte.title("Mostrar transportes")
+        ventanaMostrarTransporte.iconbitmap("python.ico")
+        Archivo = open("Información del transporte.txt")
+        Abrir = Archivo.readlines()
+        Mostrar = tkinter.Listbox(ventanaMostrarTransporte)
+        Mostrar.pack(fill=X,expand=YES)
+        contador = 0
+        for informacion in Abrir:
+            Mostrar.insert(contador,informacion)
+            contador += 1
+        boton = tkinter.Button(ventanaMostrarTransporte,text = "Mostrar empresas",font=("Times new roman","12"))
+        boton.pack()
+        
+
 
     menu2 = Menu(ventana3)
     op2 = Menu(menu2,tearoff = 0)
     op2.add_command(label = "1 - Incluir transporte",font=("Times new roman","12"),command =IncluirTransporte)
     op2.add_command(label = "2 - Eliminar transporte",font=("Times new roman","12"),command = eliminarTransporte)
     op2.add_command(label = "3 - Modificar transporte",font=("Times new roman","12"))
-    op2.add_command(label = "4 - Mostrar transportes",font=("Times new roman","12"))
+    op2.add_command(label = "4 - Mostrar transportes",font=("Times new roman","12"),command = mostrarTransportes)
     op2.add_command(label = "5 - Retornar",font=("Times new roman","12"),command = menuAdministrativo)
     menu2.add_cascade(label=" Gestión de transporte por empresa",font=("Times new roman","12"), menu = op2)
     ventana3.config(menu=menu2)
     ventana3.mainloop()
 
     
-
-def modificarTransporte():
-    ventanaModificarTransporte = Tk()
-    ventanaModificarTransporte.geometry("400x500")
-    ventanaModificarTransporte.title("Incluir empresa")
-    ventanaModificarTransporte.config(bg = "Turquoise")
-    ventanaModificarTransporte.iconbitmap("python.ico")
-    etiqueta = tkinter.Label(ventanaModificarTransporte ,text="Dígite el número de cédula jurídica:",font=("Times new roman","12"))
-    etiqueta.place(x=70,y=20)
-            
 
 def gestionViaje():
     ventana4 = Tk()
@@ -564,13 +575,30 @@ def gestionViaje():
         boton = tkinter.Button(ventanaEliminarViaje, text = "Eliminar viaje",font=("Times new roman","12"),
                         command= eliminarViaje_aux).place(x=200,y=200)
         ventanaEliminarViaje.mainloop()
+
+
+    def mostrarViajes():
+        ventanaMostrarViaje = Tk()
+        ventanaMostrarViaje.geometry("500x400")
+        ventanaMostrarViaje.title("Mostrar transportes")
+        ventanaMostrarViaje.iconbitmap("python.ico")
+        Archivo = open("Información por viaje.txt")
+        Abrir = Archivo.readlines()
+        Mostrar = tkinter.Listbox(ventanaMostrarViaje)
+        Mostrar.pack(fill=X,expand=YES)
+        contador = 0
+        for informacion in Abrir:
+            Mostrar.insert(contador,informacion)
+            contador += 1
+        boton = tkinter.Button(ventanaMostrarViaje,text = "Mostrar empresas",font=("Times new roman","12"))
+        boton.pack()
     
     menu3 = Menu(ventana4)
     op3 = Menu(menu3,tearoff = 0)
     op3.add_command(label = "1 - Incluir viaje",font=("Times new roman","12"),command = IncluirViaje)
     op3.add_command(label = "2 - Eliminar viaje",font=("Times new roman","12"),command = eliminarViaje)
     op3.add_command(label = "3 - Modificar viaje",font=("Times new roman","12"))
-    op3.add_command(label = "4 - Mostrar viajes",font=("Times new roman","12"))
+    op3.add_command(label = "4 - Mostrar viajes",font=("Times new roman","12"),command = mostrarViajes)
     op3.add_command(label = "5 - Retornar",font=("Times new roman","12"),command = menuAdministrativo)
     menu3.add_cascade(label=" Gestión de viaje",font=("Times new roman","12"), menu = op3)
     ventana4.config(menu=menu3)
