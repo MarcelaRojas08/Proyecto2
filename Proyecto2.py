@@ -86,7 +86,7 @@ def gestionEmpresa():
         Cedula = tkinter.StringVar()
         Nombre = tkinter.StringVar()
         Provincia = tkinter.StringVar()
-        Señas = tkinter.StringVar
+        Señas = tkinter.StringVar()
 
         etiquetaCedula = tkinter.Label(ventanaIncluirEmpresa,text="Dígite el número de cédula jurídica:",font=("Times new roman","12")).place(x=10,y=20)
         Cedula = tkinter.Entry(ventanaIncluirEmpresa,textvariable = Cedula,font=("Times new roman","12"))
@@ -106,25 +106,106 @@ def gestionEmpresa():
 
         def agregarEmpresa(Cedula,Nombre,Provincia,Señas):
             Archivo = open("Información de la empresa.txt","a")
-            Archivo.write("Cédula júridica:"+Cedula+"\n")
-            Archivo.write("Nombre de la empresa:"+Nombre+"\n")
-            Archivo.write("Provincia de la empresa:"+Provincia+"\n")
-            Archivo.write("Señas exactas de la empresa:"+Señas+"\n")
-            Archivo.write("....................................."+"\n")
-            Archivo.close()
-            messagebox.showinfo(title = "Agregar Empresa",message = "La empresa ha sido agregada")
+            if len(Cedula) == 10:
+                Archivo2 = open("Información de la empresa.txt")
+                Comprobar = Archivo2.readlines()
+                if("Cédula júridica:"+Cedula+"\n") in Comprobar:
+                    answer = messagebox.showerror("Error", "La cedula juridica ya existe")
+                else:
+                    Archivo.write("Cédula júridica:"+Cedula+"\n")
+                    Archivo.write("Nombre de la empresa:"+Nombre+"\n")
+                    Archivo.write("Provincia de la empresa:"+Provincia+"\n")
+                    Archivo.write("Señas exactas de la empresa:"+Señas+"\n")
+                    Archivo.write(".............................................."+"\n")
+                    Archivo.close()
+                    messagebox.showinfo(title = "Agregar Empresa",message = "La empresa ha sido agregada")
+            else:
+                answer2 = messagebox.showerror("Error", "La cedula juridica debe tener 10 digitos")
 
         boton = tkinter.Button(ventanaIncluirEmpresa, text = "Agregar empresa",font=("Times new roman","12"),
                        command= lambda:agregarEmpresa(Cedula.get(),Nombre.get(),Provincia.get(),Señas.get())).place(x=200,y=200)
         ventanaIncluirEmpresa.mainloop()
 
         
+    def eliminarEmpresa():
+        ventanaEliminarEmpresa = Tk()
+        ventanaEliminarEmpresa.geometry("500x400")
+        ventanaEliminarEmpresa.title("Eliminar empresa")
+        ventanaEliminarEmpresa.config(bg = "Turquoise")
+        ventanaEliminarEmpresa.iconbitmap("python.ico")
 
+        etiquetaEliminar = tkinter.Label(ventanaEliminarEmpresa,text="Dígite el número de cédula jurídica:",
+                                         font=("Times new roman","12")).place(x=10,y=20)
+        Cedula = tkinter.Entry(ventanaEliminarEmpresa,text="",font=("Times new roman","12"))
+        Cedula.place(x=300,y=20)
+
+        def eliminarEmpresa_aux():
+            Almacen = open("Información de la empresa.txt")
+            Borrar = Almacen.readlines()
+            if("Cédula júridica:"+Cedula.get()+ "\n")in Borrar:
+                ContarLineas = Borrar.index("Cédula júridica:"+Cedula.get()+ "\n")
+                Almacen2 = open("Información del transporte.txt")
+                Linea = Almacen2.readlines()
+                if("Empresa del transporte:"+Borrar[ContarLineas+1][21:])in Linea:
+                    answer = messagebox.showerror("Error", "La empresa esta asociada a un transporte")
+                else:
+                    BorrarLineas = EliminarEmpresa_aux(Borrar,ContarLineas,0)
+                    Almacen.close()
+                    Abrir = open("Información de la empresa.txt","w")
+                    Abrir.write(BorrarLineas)
+                    Abrir.close()
+                    answer1 = messagebox.showinfo("Eliminar empresa","La empresa ha sido eliminada")
+            else:
+                answer2 = messagebox.showerror("Error", "La empresa no existe")
+
+        def EliminarEmpresa_aux(Borrar,ContarLineas,contador):
+            if contador == 5:
+                return TransformarString(Borrar)
+            else:
+                print(Borrar[ContarLineas].rstrip())
+                Borrar.pop(ContarLineas)
+                return EliminarEmpresa_aux(Borrar,ContarLineas,contador+1)
+
+        def TransformarString(Borrar):
+            if isinstance(Borrar,list):
+                string = ""
+                for linea in Borrar:
+                    string += linea
+                return string
+            else:
+                print("")
+
+        boton = tkinter.Button(ventanaEliminarEmpresa, text = "Eliminar empresa",font=("Times new roman","12"),
+                           command= eliminarEmpresa_aux).place(x=200,y=200)
+        ventanaEliminarEmpresa.mainloop()
+
+    def modificarEmpresa():
+        ventanaModificarEmpresa = Tk()
+        ventanaModificarEmpresa.geometry("500x400")
+        ventanaModificarEmpresa.title("Modificar empresa")
+        ventanaModificarEmpresa.config(bg = "Turquoise")
+        ventanaModificarEmpresa.iconbitmap("python.ico")
+
+        etiquetaModificar = tkinter.Label(ventanaEliminarEmpresa,text="Dígite el número de cédula jurídica:",
+                                             font=("Times new roman","12")).place(x=10,y=20)
+        Modificar = tkinter.Entry(ventanaModificarEmpresa,text="",font=("Times new roman","12"))
+        Modificar.place(x=300,y=20)
+
+        if ("Cédula júridica:"+Cedula+ "\n") in empresa:
+            Indice = empresa.index("Cédula júridica:"+Cedula+"\n")
+            Empresa2_aux(empresa,Indice,0)
+            EmpresaNueva = Empresa3_aux(empresa,Indice+1,0)
+            Abrir = open("Información de la empresa.txt","w")
+            Abrir.write(TransformarString_aux(EmpresaNueva))
+            Abrir.close()
+
+        
+      
 
     menu1 = Menu(ventana2)
     op2 = Menu(menu1,tearoff = 0)
     op2.add_command(label = "1 - Incluir empresa",font=("Times new roman","12"),command = IncluirEmpresa)
-    op2.add_command(label = "2 - Eliminar empresa",font=("Times new roman","12"),command = lambda:eliminarEmpresa)
+    op2.add_command(label = "2 - Eliminar empresa",font=("Times new roman","12"),command = eliminarEmpresa)
     op2.add_command(label = "3 - Modificar empresa",font=("Times new roman","12"),command = lambda:modificarEmpresa)
     op2.add_command(label = "4 - Mostrar empresas",font=("Times new roman","12"),command = lambda:mostrarEmpresas)
     op2.add_command(label = "5 - Retornar",font=("Times new roman","12"),command = lambda:menuAdministrativo)
@@ -133,36 +214,8 @@ def gestionEmpresa():
     ventana2.mainloop()
 
         
-    
 
-def agregarEmpresa(Cedula,Nombre,Provincia,Señas):
-    Archivo = open("Información de la empresa.txt","a")
-    Archivo.write("Cédula júridica:"+Cedula+"\n")
-    Archivo.write("Nombre de la empresa:"+Nombre+"\n")
-    Archivo.write("Provincia de la empresa:"+Provincia+"\n")
-    Archivo.write("Señas exactas de la empresa:"+Provincia+"\n")
-    Archivo.write("..............................."+"\n")
-    Archivo.close()
-    messagebox.showinfo(title = "Agregar Empresa",message = "La empresa ha sido agregada")
 
-            
-def eliminarEmpresa():
-    ventanaEliminarEmpresa = Tk()
-    ventanaEliminarEmpresa.geometry("400x500")
-    ventanaEliminarEmpresa.title("Eliminar empresa")
-    ventanaEliminarEmpresa.config(bg = "Turquoise")
-    ventanaEliminarEmpresa.iconbitmap("python.ico")
-    etiqueta = tkinter.Label(ventanaEliminarEmpresa ,text="Dígite el número de cédula jurídica:",font=("Times new roman","12"))
-    etiqueta.place(x=70,y=20)
-
-def modificarEmpresa():
-    ventanaModificarEmpresa = Tk()
-    ventanaModificarEmpresa.geometry("400x500")
-    ventanaModificarEmpresa.title("Modificar empresa")
-    ventanaModificarEmpresa.config(bg = "Turquoise")
-    ventanaModificarEmpresa.iconbitmap("python.ico")
-    etiqueta = tkinter.Label(ventanaModificarEmpresa ,text="Dígite el número de cédula jurídica:",font=("Times new roman","12"))
-    etiqueta.place(x=70,y=20)
 
 def mostrarEmpresas():
     ventanaMostrarEmpresas=Tk()
@@ -180,10 +233,151 @@ def gestionTransporte():
     ventana3.title("Menú administrativo")
     ventana3.config(bg = "Turquoise")
     ventana3.iconbitmap("python.ico")
+   
+
+    def IncluirTransporte():
+        ventanaIncluirTransporte = Tk()
+        ventanaIncluirTransporte.geometry("600x500")
+        ventanaIncluirTransporte.title("Incluir transporte")
+        ventanaIncluirTransporte.config(bg = "Turquoise")
+        ventanaIncluirTransporte.iconbitmap("python.ico")
+        Placa = tkinter.StringVar()
+        Tipo = tkinter.StringVar()
+        Marca = tkinter.StringVar()
+        Modelo = tkinter.StringVar()
+        Año = tkinter.StringVar()
+        Empresa = tkinter.StringVar()
+        AsientosVIP = tkinter.StringVar()
+        AsientosNor = tkinter.StringVar()
+        AsientosEco = tkinter.StringVar()
+
+        etiquetaPlaca = tkinter.Label(ventanaIncluirTransporte,text="Escriba la placa del transporte:",
+                                      font=("Times new roman","12")).place(x=10,y=20)
+        Placa = tkinter.Entry(ventanaIncluirTransporte,textvariable = Placa,font=("Times new roman","12"))
+        Placa.place(x=270,y=20)
+
+        etiquetaTipo = tkinter.Label(ventanaIncluirTransporte,text="Tipo de transporte Buseta - Limosina:",
+                                     font=("Times new roman","12")).place(x=10,y=60)
+        Tipo = tkinter.Entry(ventanaIncluirTransporte,textvariable = Tipo,font=("Times new roman","12"))
+        Tipo.place(x=270,y=60)
+
+        etiquetaMarca = tkinter.Label(ventanaIncluirTransporte,text="Escriba la marca del transporte:",
+                                      font=("Times new roman","12")).place(x=10,y=100)
+        Marca = tkinter.Entry(ventanaIncluirTransporte,textvariable = Marca,font=("Times new roman","12"))
+        Marca.place(x=270,y=100)
+
+        etiquetaModelo = tkinter.Label(ventanaIncluirTransporte,text="Escriba el modelo del transporte:",
+                                       font=("Times new roman","12")).place(x=10,y=140)
+        Modelo = tkinter.Entry(ventanaIncluirTransporte,textvariable = Modelo,font=("Times new roman","12"))
+        Modelo.place(x=270,y=140)
+
+        etiquetaAño = tkinter.Label(ventanaIncluirTransporte,text="Escriba el año del transporte:",
+                                    font=("Times new roman","12")).place(x=10,y=180)
+        Año = tkinter.Entry(ventanaIncluirTransporte,textvariable = Año,font=("Times new roman","12"))
+        Año.place(x=270,y=180)
+
+        etiquetaEmpresa = tkinter.Label(ventanaIncluirTransporte,text="Escriba el nombre de la empresa:",
+                                        font=("Times new roman","12")).place(x=10,y=220)
+        Empresa = tkinter.Entry(ventanaIncluirTransporte,textvariable = Empresa,font=("Times new roman","12"))
+        Empresa.place(x=270,y=220)
+
+        etiquetaVIP = tkinter.Label(ventanaIncluirTransporte,text="Cantidad de asientos clase VIP:",
+                                    font=("Times new roman","12")).place(x=10,y=260)
+        AsientosVIP = tkinter.Entry(ventanaIncluirTransporte,textvariable = AsientosVIP,font=("Times new roman","12"))
+        AsientosVIP.place(x=270,y=260)
+
+        etiquetaNor = tkinter.Label(ventanaIncluirTransporte,text="Cantidad de asientos clase normal:",
+                                    font=("Times new roman","12")).place(x=10,y=300)
+        AsientosNor = tkinter.Entry(ventanaIncluirTransporte,textvariable = AsientosNor,font=("Times new roman","12"))
+        AsientosNor.place(x=270,y=300)
+
+        etiquetaEco = tkinter.Label(ventanaIncluirTransporte,text="Cantidad de asientos clase económica:",
+                                    font=("Times new roman","12")).place(x=10,y=340)
+        AsientosEco = tkinter.Entry(ventanaIncluirTransporte,textvariable = AsientosEco,font=("Times new roman","12"))
+        AsientosEco.place(x=270,y=340)
+
+        def agregarTransporte(Placa,Tipo,Marca,Modelo,Año,Empresa,AsientosVIP,AsientosNor,AsientosEco):
+            Archivo = open("Información del transporte.txt","a")
+            Archivo2 = open("Información del transporte.txt")
+            Comprobar = Archivo2.readlines()
+            if ("Placa del transporte:"+Placa+"\n") in Comprobar:
+                answer = messagebox.showerror("Error", "La placa ya existe")
+            else:
+                Archivo.write("Placa del transporte:"+Placa+"\n")
+                Archivo.write("Tipo de transporte:"+Tipo+"\n")
+                Archivo.write("Marca del transporte:"+Marca+"\n")
+                Archivo.write("Modelo del transporte:"+Modelo+"\n")
+                Archivo.write("Año del transporte:"+Año+"\n")
+                Archivo.write("Empresa del transporte:"+Empresa+"\n")
+                Archivo.write("Cantidad de asientos clase VIP:"+AsientosVIP+"\n")
+                Archivo.write("Cantidad de asientos clase normal:"+AsientosNor+"\n")
+                Archivo.write("Cantidad de asientos clase económica:"+AsientosEco+"\n")
+                Archivo.write("......................................"+"\n")
+                messagebox.showinfo(title = "Agregar Transporte",message = "El transporte ha sido agregado")
+
+        boton = tkinter.Button(ventanaIncluirTransporte, text = "Agregar transporte",font=("Times new roman","12"),
+                       command= lambda:agregarTransporte(Placa.get(),Tipo.get(),Marca.get(),Modelo.get(),Año.get(),Empresa.get(),
+                                                         AsientosVIP.get(),AsientosNor.get(),AsientosEco.get())).place(x=200,y=380)
+        ventanaIncluirTransporte.mainloop()
+
+    
+    def eliminarTransporte():
+        ventanaEliminarTransporte = Tk()
+        ventanaEliminarTransporte.geometry("500x400")
+        ventanaEliminarTransporte.title("Eliminar transporte")
+        ventanaEliminarTransporte.config(bg = "Turquoise")
+        ventanaEliminarTransporte.iconbitmap("python.ico")
+        etiquetaEliminar = tkinter.Label(ventanaEliminarTransporte ,text="Escriba la placa del transporte:",
+                                             font=("Times new roman","12")).place(x=10,y=20)
+        Placa = tkinter.Entry(ventanaEliminarTransporte,text="",font=("Times new roman","12"))
+        Placa.place(x=300,y=20)
+
+        def eliminarTransporte_aux():
+            Almacen = open("Información del transporte.txt")
+            Borrar = Almacen.readlines()
+            if("Placa del transporte:"+Placa.get()+"\n")in Borrar:
+                ContarLineas = Borrar.index("Placa del transporte:"+Placa.get()+"\n")
+                Almacen2 = open("Información por viaje.txt")
+                Linea = Almacen2.readlines()
+                if("Placa del transporte:"+Borrar[ContarLineas][21:])in Linea:
+                    answer = messagebox.showerror("Error", "El transporte esta asociado a un viaje")
+                else:
+                    BorrarLineas = EliminarTransporte_aux(Borrar,ContarLineas,0)
+                    Almacen.close()
+                    Abrir = open("Información del transporte.txt","w")
+                    Abrir.write(BorrarLineas)
+                    Abrir.close()
+                    answer = messagebox.showinfo("Eliminar transporte","El transporte ha sido eliminado")
+            else:
+                answer = messagebox.showerror("Error", "El transporte no existe")
+
+        def EliminarTransporte_aux(Borrar,ContarLineas,contador):
+            if contador == 10:
+                return TransformarString(Borrar)
+            else:
+                print(Borrar[ContarLineas].rstrip())
+                Borrar.pop(ContarLineas)
+                return EliminarTransporte_aux(Borrar,ContarLineas,contador+1)
+
+        def TransformarString(Borrar):
+            if isinstance(Borrar,list):
+                string = ""
+                for linea in Borrar:
+                    string += linea
+                return string
+            else:
+                print("")
+
+
+        boton = tkinter.Button(ventanaEliminarTransporte, text = "Eliminar transporte",font=("Times new roman","12"),
+                        command= eliminarTransporte_aux).place(x=200,y=200)
+        ventanaEliminarTransporte.mainloop()
+
+
     menu2 = Menu(ventana3)
     op2 = Menu(menu2,tearoff = 0)
-    op2.add_command(label = "1 - Incluir transporte",font=("Times new roman","12"))
-    op2.add_command(label = "2 - Eliminar transporte",font=("Times new roman","12"))
+    op2.add_command(label = "1 - Incluir transporte",font=("Times new roman","12"),command =IncluirTransporte)
+    op2.add_command(label = "2 - Eliminar transporte",font=("Times new roman","12"),command = eliminarTransporte)
     op2.add_command(label = "3 - Modificar transporte",font=("Times new roman","12"))
     op2.add_command(label = "4 - Mostrar transportes",font=("Times new roman","12"))
     op2.add_command(label = "5 - Retornar",font=("Times new roman","12"),command = menuAdministrativo)
@@ -191,28 +385,7 @@ def gestionTransporte():
     ventana3.config(menu=menu2)
     ventana3.mainloop()
 
-def IncluirTransporte():
-    ventanaIncluirTransporte = Tk()
-    ventanaIncluirTransporte.geometry("400x500")
-    ventanaIncluirTransporte.title("Incluir transporte")
-    ventanaIncluirTransporte.config(bg = "Turquoise")
-    ventanaIncluirTransporte.iconbitmap("python.ico")
-    etiqueta = tkinter.Label(ventanaIncluirTransporte,text="Escriba la placa del transporte:",font=("Times new roman","12"))
-    etiqueta.place(x=70,y=20)
-    entrada = tkinte.Entry(ventanaIncluirTransporte,text="",font=("Times new roman","12"))
-    entrada.place(x=80,y=30)
-
-            
-
-
-def eliminarTransporte():
-    ventanaEliminarTransporte = Tk()
-    ventanaEliminarTransporte.geometry("400x500")
-    ventanaEliminarTransporte.title("Incluir empresa")
-    ventanaEliminarTransporte.config(bg = "Turquoise")
-    ventanaEliminarTransporte.iconbitmap("python.ico")
-    etiqueta = tkinter.Label(ventanaEliminarTransporte ,text="Dígite el número de cédula jurídica:",font=("Times new roman","12"))
-    etiqueta.place(x=70,y=20)
+    
 
 def modificarTransporte():
     ventanaModificarTransporte = Tk()
@@ -230,10 +403,172 @@ def gestionViaje():
     ventana4.title("Menú administrativo")
     ventana4.config(bg = "Turquoise")
     ventana4.iconbitmap("python.ico")
+
+    def IncluirViaje():
+        ventanaIncluirViaje = Tk()
+        ventanaIncluirViaje.geometry("600x600")
+        ventanaIncluirViaje.title("Incluir viaje")
+        ventanaIncluirViaje.config(bg = "Turquoise")
+        ventanaIncluirViaje.iconbitmap("python.ico")
+        NumeroViaje = tkinter.StringVar()
+        ProvinciaSalida = tkinter.StringVar()
+        CiudadSalida = tkinter.StringVar()
+        FechaSalida = tkinter.StringVar()
+        HoraSalida = tkinter.StringVar()
+        ProvinciaLlegada = tkinter.StringVar()
+        CiudadLlegada = tkinter.StringVar()
+        FechaLlegada = tkinter.StringVar()
+        HoraLlegada = tkinter.StringVar()
+        Empresa = tkinter.StringVar()
+        Transporte = tkinter.StringVar()
+        MontoVIP = tkinter.StringVar()
+        MontoNor = tkinter.StringVar()
+        MontoEco = tkinter.StringVar()
+
+        etiquetaPS = tkinter.Label(ventanaIncluirViaje,text="Escriba la provincia de salida:",
+                                      font=("Times new roman","12")).place(x=10,y=20)
+        ProvinciaSalida = tkinter.Entry(ventanaIncluirViaje,textvariable = ProvinciaSalida,font=("Times new roman","12"))
+        ProvinciaSalida.place(x=270,y=20)
+
+        etiquetaCS = tkinter.Label(ventanaIncluirViaje,text="Escriba la ciudad de salida:",
+                                     font=("Times new roman","12")).place(x=10,y=60)
+        CiudadSalida = tkinter.Entry(ventanaIncluirViaje,textvariable = CiudadSalida,font=("Times new roman","12"))
+        CiudadSalida.place(x=270,y=60)
+
+        etiquetaFS = tkinter.Label(ventanaIncluirViaje,text="Escriba la fecha de salida:",
+                                      font=("Times new roman","12")).place(x=10,y=100)
+        FechaSalida = tkinter.Entry(ventanaIncluirViaje,textvariable = FechaSalida,font=("Times new roman","12"))
+        FechaSalida.place(x=270,y=100)
+
+        etiquetaHS = tkinter.Label(ventanaIncluirViaje,text="Escriba la hora de salida:",
+                                       font=("Times new roman","12")).place(x=10,y=140)
+        HoraSalida = tkinter.Entry(ventanaIncluirViaje,textvariable = HoraSalida,font=("Times new roman","12"))
+        HoraSalida.place(x=270,y=140)
+
+        etiquetaPLl = tkinter.Label(ventanaIncluirViaje,text="Escriba la provincia de llegada:",
+                                    font=("Times new roman","12")).place(x=10,y=180)
+        ProvinciaLlegada = tkinter.Entry(ventanaIncluirViaje,textvariable = ProvinciaLlegada,font=("Times new roman","12"))
+        ProvinciaLlegada.place(x=270,y=180)
+
+        etiquetaCLl = tkinter.Label(ventanaIncluirViaje,text="Escriba la ciudad de llegada:",
+                                        font=("Times new roman","12")).place(x=10,y=220)
+        CiudadLlegada = tkinter.Entry(ventanaIncluirViaje,textvariable = CiudadLlegada,font=("Times new roman","12"))
+        CiudadLlegada.place(x=270,y=220)
+
+        etiquetaFLl = tkinter.Label(ventanaIncluirViaje,text="Escriba la fecha de llegada:",
+                                      font=("Times new roman","12")).place(x=10,y=260)
+        FechaLlegada = tkinter.Entry(ventanaIncluirViaje,textvariable = FechaLlegada,font=("Times new roman","12"))
+        FechaLlegada.place(x=270,y=260)
+
+        etiquetaHLl = tkinter.Label(ventanaIncluirViaje,text="Escriba la hora de llegada:",
+                                       font=("Times new roman","12")).place(x=10,y=300)
+        HoraLlegada = tkinter.Entry(ventanaIncluirViaje,textvariable = HoraLlegada,font=("Times new roman","12"))
+        HoraLlegada.place(x=270,y=300)
+
+        etiquetaEmpresa = tkinter.Label(ventanaIncluirViaje,text="Escriba el nombre de la empresa:",
+                                        font=("Times new roman","12")).place(x=10,y=340)
+        Empresa = tkinter.Entry(ventanaIncluirViaje,textvariable = Empresa,font=("Times new roman","12"))
+        Empresa.place(x=270,y=340)
+
+        etiquetaTransporte = tkinter.Label(ventanaIncluirViaje,text="Escriba la placa del transporte:",
+                                        font=("Times new roman","12")).place(x=10,y=380)
+        Transporte = tkinter.Entry(ventanaIncluirViaje,textvariable = Transporte,font=("Times new roman","12"))
+        Transporte.place(x=270,y=380)
+
+        etiquetaMVIP = tkinter.Label(ventanaIncluirViaje,text="Monto de asiento VIP:",
+                                    font=("Times new roman","12")).place(x=10,y=420)
+        MontoVIP = tkinter.Entry(ventanaIncluirViaje,textvariable = MontoVIP,font=("Times new roman","12"))
+        MontoVIP.place(x=270,y=420)
+
+        etiquetaMNor = tkinter.Label(ventanaIncluirViaje,text="Monto de asiento normal:",
+                                    font=("Times new roman","12")).place(x=10,y=460)
+        MontoNor = tkinter.Entry(ventanaIncluirViaje,textvariable = MontoNor,font=("Times new roman","12"))
+        MontoNor.place(x=270,y=460)
+
+        etiquetaMEco = tkinter.Label(ventanaIncluirViaje,text="Monto de asiento económico:",
+                                    font=("Times new roman","12")).place(x=10,y=500)
+        MontoEco = tkinter.Entry(ventanaIncluirViaje,textvariable = MontoEco,font=("Times new roman","12"))
+        MontoEco.place(x=270,y=500)
+
+        def agregarViaje(NumeroViaje,ProvinciaSalida,CiudadSalida,FechaSalida,HoraSalida,ProvinciaLlegada,CiudadLlegada,
+                         FechaLlegada,HoraLlegada,Empresa,Transporte,MontoVIP,MontoNor,MontoEco):
+            Archivo = open("Información por viaje.txt","a")
+            Archivo.write("Número de viaje:"+str(NumeroViaje)+"\n")
+            Archivo.write("Provincia de salida:"+ProvinciaSalida+"\n")
+            Archivo.write("Ciudad de salida:"+CiudadSalida+"\n")
+            Archivo.write("Fecha de salida:"+FechaSalida+"\n")
+            Archivo.write("Hora de salida:"+HoraSalida+"\n")
+            Archivo.write("Provincia de llegada:"+ProvinciaLlegada+"\n")
+            Archivo.write("Ciudad de llegada:"+CiudadLlegada+"\n")
+            Archivo.write("Fecha de llegada:"+FechaLlegada+"\n")
+            Archivo.write("Hora de llegada:"+HoraLlegada+"\n")
+            Archivo.write("Nombre de la empresa:"+Empresa+"\n")
+            Archivo.write("Placa del transporte:"+Transporte+"\n")
+            Archivo.write("Monto de asiento clase VIP:"+MontoVIP+"\n")
+            Archivo.write("Monto de asiento clase normal:"+MontoNor+"\n")
+            Archivo.write("Monto de asiento clase económica:"+MontoEco+"\n")
+            Archivo.write("......................................"+"\n")
+            messagebox.showinfo(title = "Agregar Viaje",message = "El viaje ha sido agregado")
+
+        boton = tkinter.Button(ventanaIncluirViaje, text = "Agregar viaje",font=("Times new roman","12"),
+                       command= lambda:agregarViaje(NumeroViaje.get(),ProvinciaSalida.get(),CiudadSalida.get(),FechaSalida.get(),HoraSalida.get(),
+                                                    ProvinciaLlegada.get(),CiudadLlegada.get(),FechaLlegada.get(),HoraLlegada.get(),Empresa.get(),
+                                                    Transporte.get(),MontoVIP.get(),MontoNor.get(),MontoEco.get())).place(x=200,y=550)
+        ventanaIncluirViaje.mainloop()
+
+
+    def eliminarViaje():
+        ventanaEliminarViaje = Tk()
+        ventanaEliminarViaje.geometry("500x400")
+        ventanaEliminarViaje.title("Eliminar transporte")
+        ventanaEliminarViaje.config(bg = "Turquoise")
+        ventanaEliminarViaje.iconbitmap("python.ico")
+
+        etiquetaEliminar = tkinter.Label(ventanaEliminarViaje,text="Escriba el numero del viaje:",
+                                             font=("Times new roman","12")).place(x=10,y=20)
+        NumeroViaje = tkinter.Entry(ventanaEliminarViaje,text="",font=("Times new roman","12"))
+        NumeroViaje.place(x=300,y=20)
+
+        def eliminarViaje_aux():
+            Almacen = open("Información por viaje.txt")
+            Borrar = Almacen.readlines()
+            if("Número de viaje:"+NumeroViaje.get()+ "\n")in Borrar:
+                ContarLineas = Borrar.index("Número de viaje:"+NumeroViaje.get()+ "\n")
+                BorrarLineas = EliminarViaje_aux(Borrar,ContarLineas,0)
+                Almacen.close()
+                Abrir = open("Información por viaje.txt","w")
+                Abrir.write(BorrarLineas)
+                Abrir.close()
+                messagebox.showinfo("Eliminar viaje","El viaje ha sido eliminado")
+            else:
+                messagebox.showerror("Error","El viaje no existe")
+
+        def EliminarViaje_aux(Borrar,ContarLineas,contador):
+            if contador == 15:
+                return TransformarString(Borrar)
+            else:
+                print(Borrar[ContarLineas].rstrip())
+                Borrar.pop(ContarLineas)
+                return EliminarViaje_aux(Borrar,ContarLineas,contador+1)
+
+        def TransformarString(Borrar):
+            if isinstance(Borrar,list):
+                string = ""
+                for linea in Borrar:
+                    string += linea
+                return string
+            else:
+                print("")
+
+
+        boton = tkinter.Button(ventanaEliminarViaje, text = "Eliminar viaje",font=("Times new roman","12"),
+                        command= eliminarViaje_aux).place(x=200,y=200)
+        ventanaEliminarViaje.mainloop()
+    
     menu3 = Menu(ventana4)
     op3 = Menu(menu3,tearoff = 0)
-    op3.add_command(label = "1 - Incluir viaje",font=("Times new roman","12"))
-    op3.add_command(label = "2 - Eliminar viaje",font=("Times new roman","12"))
+    op3.add_command(label = "1 - Incluir viaje",font=("Times new roman","12"),command = IncluirViaje)
+    op3.add_command(label = "2 - Eliminar viaje",font=("Times new roman","12"),command = eliminarViaje)
     op3.add_command(label = "3 - Modificar viaje",font=("Times new roman","12"))
     op3.add_command(label = "4 - Mostrar viajes",font=("Times new roman","12"))
     op3.add_command(label = "5 - Retornar",font=("Times new roman","12"),command = menuAdministrativo)
@@ -334,7 +669,6 @@ def cancelacion():
     ventana10.config(menu=menu9)
     ventana10.mainloop()
     
-
 
 
 ventanaPrincipal()
